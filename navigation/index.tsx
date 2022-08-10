@@ -2,13 +2,13 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList, RootTabParamList } from "../types";
+import { RootStackParamList, RootTabParamList } from "./types";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import ServeursScreen from "../screens/ServeursScreen";
 import LoginScreen from "../screens/LoginScreen";
 
-export default function Navigation() {
+export default function Navigation(): JSX.Element {
 	return (
 		<NavigationContainer>
 			<StackNavigator />
@@ -17,7 +17,7 @@ export default function Navigation() {
 }
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function StackNavigator() {
+function StackNavigator(): JSX.Element {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
@@ -29,7 +29,7 @@ function StackNavigator() {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator() {
+function BottomTabNavigator(): JSX.Element {
 	return (
 		<Tab.Navigator>
 			<Tab.Screen name='TabOne' component={TabOneScreen} options={{ headerShown: false }} />

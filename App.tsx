@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
+import GlobalContextProvider from "./context/GlobalProvider";
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();
@@ -13,8 +14,10 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				<Navigation />
-				<StatusBar />
+				<GlobalContextProvider>
+					<Navigation />
+					<StatusBar />
+				</GlobalContextProvider>
 			</SafeAreaProvider>
 		);
 	}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
-import { RootStackScreenProps } from "../types";
+import { RootStackScreenProps } from "../navigation/types";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 	return (
