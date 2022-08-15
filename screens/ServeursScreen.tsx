@@ -1,6 +1,5 @@
 import React from "react";
-import { Button, StyleSheet } from "react-native";
-import { Text, View } from "../components/Themed";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { RootStackScreenProps } from "../navigation/types";
 
 export default function ServeursScreen({ navigation }: RootStackScreenProps<"Serveurs">) {
