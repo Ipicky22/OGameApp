@@ -6,14 +6,16 @@ const axios = Axios.create({
 	baseURL: "https://lobby.ogame.gameforge.com/api",
 });
 
-async function login(navigation) {
+async function login(username, password) {
 	try {
 		const response = await axios.post("https://gameforge.com/api/v1/auth/thin/sessions", {
 			autoGameAccountCreation: false,
 			gameEnvironmentId: "0a31d605-ffaf-43e7-aa02-d06df7116fc8",
 			gfLang: "en",
+			// identity: username,
 			identity: REACT_APP_USERNAME,
 			locale: "en_GB",
+			// password: password,
 			password: REACT_APP_PASSWORD,
 			platformGameId: "1dfd8e7e-6e1a-4eb1-8c64-03c3b62efd2f",
 		});
@@ -33,7 +35,6 @@ async function login(navigation) {
 			return config;
 		});
 		await refreshUser();
-		navigation.navigate("Serveurs");
 	} catch (e) {
 		console.log("error", e);
 		throw new Error("Failed to login");
