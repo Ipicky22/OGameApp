@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ImageBackground, SafeAreaView, TextInput, Image } from "react-native";
+import { StyleSheet, ImageBackground, SafeAreaView, TextInput, Image, Text, Keyboard } from "react-native";
 import { RootStackScreenProps } from "../navigation/types";
 import Button from "../components/Button";
 import login from "../api";
@@ -9,6 +9,21 @@ const image = require("../assets/images/background2.jpg");
 function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 	const [username, setUsername] = useState<string>();
 	const [password, setPassword] = useState<string>();
+	const [errorLogin, setErrorLogin] = useState<boolean>(false);
+
+	const handleLogin = () => {
+		login(username, password)
+			.then(() => {
+				navigation.navigate("Home");
+			})
+			.catch(() => {
+				setErrorLogin(true);
+			})
+			.finally(() => {
+				setUsername("");
+				setPassword("");
+			});
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -18,14 +33,17 @@ function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 					style={styles.text}
 					placeholder='Username'
 					onChangeText={setUsername}
-					value={username}></TextInput>
+					value={username}
+					onSubmitEditing={Keyboard.dismiss}></TextInput>
 				<TextInput
 					style={styles.text}
 					placeholder='Password'
 					onChangeText={setPassword}
 					value={password}
-					secureTextEntry={true}></TextInput>
-				<Button title='Se Connecter' onPress={() => login(navigation)} />
+					secureTextEntry={true}
+					onSubmitEditing={Keyboard.dismiss}></TextInput>
+				<Button title='Login' onPress={() => handleLogin()} />
+				{errorLogin && <Text style={styles.error}>Invalid username or password</Text>}
 			</ImageBackground>
 		</SafeAreaView>
 	);
@@ -54,5 +72,12 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		width: "60%",
 		padding: 10,
+	},
+	error: {
+		color: "red",
+		fontSize: 16,
+		textAlign: "center",
+		fontWeight: "bold",
+		marginTop: 16,
 	},
 });

@@ -1,19 +1,15 @@
 import * as React from "react";
-import renderer from "react-test-renderer";
-import { fireEvent, render, wait, screen, cleanup, waitFor } from "@testing-library/react-native";
+import { render, cleanup } from "@testing-library/react-native";
 
 import Button from "../Button";
 
-const caption = "Se Connecter";
+const caption = "Login";
 const color = "#263344";
 
 describe("<Button>", () => {
 	afterEach(cleanup);
 
-	const buttonCallbackFunction = jest.fn();
-	const activeButton = render(
-		<Button title='Se Connecter' onPress={() => console.log("Button Press Test")} testID='button' />
-	);
+	const activeButton = render(<Button title='Login' />);
 
 	const button = activeButton.toJSON();
 
