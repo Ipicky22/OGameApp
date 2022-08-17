@@ -2,8 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, ImageBackground, SafeAreaView, TextInput, Image, Text, Keyboard } from "react-native";
 import { RootStackScreenProps } from "../navigation/types";
 import Button from "../components/Button";
-import login from "../api";
+import login from "../api/services/auth";
 import GlobalContext from "../context/GlobalContext";
+import findServerName from "../api/services/servers";
 
 const image = require("../assets/images/background2.jpg");
 
@@ -20,21 +21,23 @@ function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 		if (resultLogin) {
 			const simplifiedData: any[] = [];
 
-			resultLogin.map((item: any) => {
+			resultLogin.map(async (item: any) => {
+				let serverName = await findServerName(item.server);
+
 				let simplifiedItem = {
 					name: item.name,
 					gameAccountId: item.gameAccountId,
 					id: item.id,
 					server: item.server.number,
+					serverName: serverName,
 					language: item.server.language,
 					rank: item.details[0].value,
 				};
-
 				simplifiedData.push(simplifiedItem);
 			});
 
 			setServersPlayed(simplifiedData);
-			navigation.navigate("Home");
+			navigation.navigate("Serveurs");
 		} else {
 			setErrorLogin(true);
 		}
