@@ -19,8 +19,9 @@ async function login(username, password) {
 			password: REACT_APP_PASSWORD,
 			platformGameId: "1dfd8e7e-6e1a-4eb1-8c64-03c3b62efd2f",
 		});
+
 		const { token } = response.data;
-		console.log("token", token);
+		// console.log("token", token);
 
 		// let cookie = "";
 		// console.log("response.headers", response.headers);
@@ -31,31 +32,33 @@ async function login(username, password) {
 		axios.interceptors.request.use((config) => {
 			// config.headers.cookie = cookie;
 			config.headers.authorization = `Bearer ${token}`;
-			console.log("config", config);
 			return config;
 		});
-		await refreshUser();
+
+		const user = await refreshUser();
+		// console.log("user", user);
+		return user;
 	} catch (e) {
-		console.log("error", e);
 		throw new Error("Failed to login");
 	}
 }
 
 async function refreshUser() {
 	user = await me();
-	console.log(`Connected with ${user.email}`);
+	// console.log(`Connected with ${user.email}`);
 	user.accounts = await getAccounts();
+	return user.accounts;
 }
 
 async function me() {
 	const { data } = await axios.get("/users/me");
-	console.log("me", data);
+	// console.log("me", data);
 	return data;
 }
 
 async function getAccounts() {
 	const { data } = await axios.get("/users/me/accounts");
-	console.log("accounts", data);
+	// console.log("accounts", data);
 	return sortAccountByLastLogin(data);
 }
 

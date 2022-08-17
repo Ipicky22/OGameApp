@@ -1,13 +1,13 @@
 import { createContext, Context } from "react";
 
 type GlobalContextType = {
-	isAuthenticated: boolean;
-	setIsAuthenticated: (isAuthenticated: boolean) => void;
+	serversPlayed: any[];
+	setServersPlayed: (serversPlayed: any[]) => void;
 };
 
 const GlobalContext: Context<GlobalContextType> = createContext<GlobalContextType>({
-	isAuthenticated: false,
-	setIsAuthenticated: (isAuthenticated: boolean) => {},
+	serversPlayed: [],
+	setServersPlayed: (serversPlayed: any[]) => {},
 });
 
 export default GlobalContext;

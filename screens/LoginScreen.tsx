@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, ImageBackground, SafeAreaView, TextInput, Image, Text, Keyboard } from "react-native";
 import { RootStackScreenProps } from "../navigation/types";
 import Button from "../components/Button";
 import login from "../api";
+import GlobalContext from "../context/GlobalContext";
 
 const image = require("../assets/images/background2.jpg");
 
@@ -11,18 +12,35 @@ function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 	const [password, setPassword] = useState<string>();
 	const [errorLogin, setErrorLogin] = useState<boolean>(false);
 
-	const handleLogin = () => {
-		login(username, password)
-			.then(() => {
-				navigation.navigate("Home");
-			})
-			.catch(() => {
-				setErrorLogin(true);
-			})
-			.finally(() => {
-				setUsername("");
-				setPassword("");
+	const { setServersPlayed } = useContext(GlobalContext);
+
+	const handleLogin = async () => {
+		const resultLogin = await login(username, password);
+
+		if (resultLogin) {
+			const simplifiedData: any[] = [];
+
+			resultLogin.map((item: any) => {
+				let simplifiedItem = {
+					name: item.name,
+					gameAccountId: item.gameAccountId,
+					id: item.id,
+					server: item.server.number,
+					language: item.server.language,
+					rank: item.details[0].value,
+				};
+
+				simplifiedData.push(simplifiedItem);
 			});
+
+			setServersPlayed(simplifiedData);
+			navigation.navigate("Home");
+		} else {
+			setErrorLogin(true);
+		}
+
+		setUsername("");
+		setPassword("");
 	};
 
 	return (
