@@ -1,15 +1,17 @@
 import React from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 
 type ButtonProps = {
 	title: string;
 	onPress: () => void;
+	disabled?: boolean;
+	spin?: boolean;
 };
 
-const Button = ({ onPress, title }: ButtonProps): JSX.Element => {
+const Button = ({ onPress, title, disabled = false, spin = false }: ButtonProps): JSX.Element => {
 	return (
-		<Pressable style={styles.button} onPress={onPress}>
-			<Text style={styles.text}>{title}</Text>
+		<Pressable style={styles.button} onPress={onPress} disabled={disabled}>
+			{spin ? <ActivityIndicator size='small' color='#fff' /> : <Text style={styles.text}>{title}</Text>}
 		</Pressable>
 	);
 };

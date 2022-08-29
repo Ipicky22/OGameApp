@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, ImageBackground, SafeAreaView, TextInput, Image, Text, Keyboard } from "react-native";
 import { RootStackScreenProps } from "../navigation/types";
 import Button from "../components/Button";
-import login from "../api";
+import login from "../api/services/auth";
+import GlobalContext from "../context/GlobalContext";
+import findServerName from "../api/services/servers";
 
 const image = require("../assets/images/background2.jpg");
 
@@ -10,19 +12,44 @@ function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 	const [username, setUsername] = useState<string>();
 	const [password, setPassword] = useState<string>();
 	const [errorLogin, setErrorLogin] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const handleLogin = () => {
-		login(username, password)
-			.then(() => {
-				navigation.navigate("Home");
-			})
-			.catch(() => {
-				setErrorLogin(true);
-			})
-			.finally(() => {
-				setUsername("");
-				setPassword("");
-			});
+	const { setServersPlayed } = useContext(GlobalContext);
+
+	const getServersPlayed = (data: any[]) => {
+		const simplifiedData: any[] = [];
+
+		data.map(async (item: any) => {
+			let serverName = await findServerName(item.server);
+			let simplifiedItem = {
+				name: item.name,
+				gameAccountId: item.gameAccountId,
+				id: item.id,
+				server: item.server.number,
+				serverName: serverName,
+				language: item.server.language,
+				rank: item.details[0].value,
+			};
+			simplifiedData.push(simplifiedItem);
+		});
+
+		setServersPlayed(simplifiedData);
+	};
+
+	const handleLogin = async () => {
+		setIsLoading(true);
+		const resultLogin = await login(username, password);
+
+		if (resultLogin) {
+			getServersPlayed(resultLogin);
+			setTimeout(() => navigation.navigate("Serveurs"), 100);
+		} else {
+			setErrorLogin(true);
+		}
+
+		setUsername("");
+		setPassword("");
+		setIsLoading(false);
 	};
 
 	return (
@@ -42,7 +69,7 @@ function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
 					value={password}
 					secureTextEntry={true}
 					onSubmitEditing={Keyboard.dismiss}></TextInput>
-				<Button title='Login' onPress={() => handleLogin()} />
+				<Button title='Login' onPress={() => handleLogin()} spin={isLoading} />
 				{errorLogin && <Text style={styles.error}>Invalid username or password</Text>}
 			</ImageBackground>
 		</SafeAreaView>

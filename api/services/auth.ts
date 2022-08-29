@@ -6,7 +6,8 @@ const axios = Axios.create({
 	baseURL: "https://lobby.ogame.gameforge.com/api",
 });
 
-async function login(username, password) {
+async function login(username?: string, password?: string) {
+	// async function login() {
 	try {
 		const response = await axios.post("https://gameforge.com/api/v1/auth/thin/sessions", {
 			autoGameAccountCreation: false,
@@ -21,22 +22,13 @@ async function login(username, password) {
 		});
 
 		const { token } = response.data;
-		// console.log("token", token);
 
-		// let cookie = "";
-		// console.log("response.headers", response.headers);
-		// if (response.headers["set-cookie"][0]) {
-		// 	cookie = response.headers["set-cookie"][0];
-		// }
-
-		axios.interceptors.request.use((config) => {
-			// config.headers.cookie = cookie;
+		axios.interceptors.request.use((config: any) => {
 			config.headers.authorization = `Bearer ${token}`;
 			return config;
 		});
 
 		const user = await refreshUser();
-		// console.log("user", user);
 		return user;
 	} catch (e) {
 		throw new Error("Failed to login");
@@ -44,25 +36,22 @@ async function login(username, password) {
 }
 
 async function refreshUser() {
-	user = await me();
-	// console.log(`Connected with ${user.email}`);
+	const user = await me();
 	user.accounts = await getAccounts();
 	return user.accounts;
 }
 
 async function me() {
 	const { data } = await axios.get("/users/me");
-	// console.log("me", data);
 	return data;
 }
 
 async function getAccounts() {
 	const { data } = await axios.get("/users/me/accounts");
-	// console.log("accounts", data);
 	return sortAccountByLastLogin(data);
 }
 
-const sortAccountByLastLogin = (accounts) => {
+const sortAccountByLastLogin = (accounts: any[]) => {
 	return accounts.sort((a, b) => {
 		const da = new Date(a.lastLogin);
 		const db = new Date(b.lastLogin);
